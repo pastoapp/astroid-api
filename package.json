@@ -24,6 +24,10 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@types/orbit-db": "https://github.com/orbitdb/orbit-db-types.git",
+    "ipfs": "^0.60.0",
+    "ipfs-http-client": "^54.0.0",
+    "orbit-db": "^0.28.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0"
