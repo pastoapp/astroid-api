@@ -1,5 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiConfig, IpfsApiService } from '../ipfs-api/ipfs-api.service';
+import { ApiConfig } from 'src/ipfs-api/interfaces/api-config.interface';
+import { OrbitDbApi } from 'src/ipfs-api/lib/orbitdb-api';
+import { IpfsApiService } from '../ipfs-api/ipfs-api.service';
 
 @Controller('identity')
 export class IdentityController {
@@ -10,12 +12,15 @@ export class IdentityController {
     orbitDbOptions: {},
     serverOptions: {},
   };
+  api: Promise<OrbitDbApi>;
 
-  constructor(private ipfsApiService: IpfsApiService) {}
+  constructor(private ipfsApiService: IpfsApiService) {
+    this.api = this.ipfsApiService.apiFactory(this.settings);
+  }
 
   @Get()
   async sendIdentity() {
-    const factory = await this.ipfsApiService.apiFactory(this.settings);
+    const factory = await this.api;
     return factory.identity();
   }
 }

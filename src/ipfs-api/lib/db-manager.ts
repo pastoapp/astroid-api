@@ -1,9 +1,7 @@
 export class DbManager {
-  constructor(private orbitdb) {}
+  constructor(private orbitdb: any) {}
 
-  id() {
-    return this.orbitdb.identity;
-  }
+  identity = this.orbitdb.identity;
 
   test() {
     return 'Hello from db-manager';

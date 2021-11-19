@@ -10,7 +10,7 @@ export class OrbitDbApi {
   }
 
   identity() {
-    return this.dbm.id();
+    return this.dbm.identity;
   }
 
   test() {
