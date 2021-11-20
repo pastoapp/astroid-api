@@ -6,24 +6,34 @@ import {
   Patch,
   Param,
   Delete,
+  Res,
 } from '@nestjs/common';
+import { Response } from 'express';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
+
+// TODO: #4 provide appropiate http response status'
 
 @Controller('databases')
 export class DatabasesController {
   constructor(private readonly databasesService: DatabasesService) {}
 
   @Post(':id')
-  create(
+  async create(
     @Body() createDatabaseDto: CreateDatabaseDto,
     @Param('id') id: string,
+    @Res() response: Response,
   ) {
-    return this.databasesService.create(createDatabaseDto, id);
+    try {
+      const result = await this.databasesService.create(createDatabaseDto, id);
+      response.json(result);
+    } catch (e) {
+      response.status(500).json({ error: e.message });
+    }
   }
 
-  @Get()
+  @Get('/')
   findAll() {
     return this.databasesService.findAll();
   }
@@ -34,11 +44,17 @@ export class DatabasesController {
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateDatabaseDto: UpdateDatabaseDto,
+    @Res() response: Response,
   ) {
-    return this.databasesService.update(id, updateDatabaseDto);
+    try {
+      const result = await this.databasesService.update(id, updateDatabaseDto);
+      response.json(result);
+    } catch (e) {
+      response.status(500).json({ error: e.mesage });
+    }
   }
 
   @Delete(':id')
