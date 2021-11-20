@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:6.2.2
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-storage:/data
+  devcontainer:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mounts the project folder to '/workspace'. While this file is in .devcontainer,
+      # mounts are relative to the first file in the list, which is a level up.
+      - .:/workspace:cached
+
+volumes:
+  redis-storage: null
