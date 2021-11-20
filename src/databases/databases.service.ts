@@ -10,6 +10,13 @@ export class DatabasesService {
 
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
+  /**
+   * Create an OrbitDB entry.
+   *
+   * @param createDatabaseDto database creation params
+   * @param id database name
+   * @returns data, with what the database was generated
+   */
   async create(createDatabaseDto: CreateDatabaseDto, id: string) {
     // disallow the global variable of all DBs
     if (id === 'db_all') throw new Error('Forbidden DB name');
