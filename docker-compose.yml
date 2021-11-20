@@ -2,14 +2,21 @@ version: '3.8'
 
 services:
   redis:
-    image: redis:6.2
+    image: redis:6.2.2
     ports:
-      - 6379:6379
-    environment:
-      - REDIS_PASSWORD=redis
+      - "6379:6379"
     volumes:
-      - astroid-redis:/data
-    command: redis-server --save 60 1 #--loglevel warning
+      - redis-storage:/data
+  devcontainer:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      # Mounts the project folder to '/workspace'. While this file is in .devcontainer,
+      # mounts are relative to the first file in the list, which is a level up.
+      - .:/workspace:cached
 
 volumes:
-  astroid-redis:
+  redis-storage: null
