@@ -1,26 +1,92 @@
-import { Injectable } from '@nestjs/common';
+import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
+import { remove as ldremove } from 'lodash';
 
 @Injectable()
 export class DatabasesService {
-  create(createDatabaseDto: CreateDatabaseDto) {
-    return 'This action adds a new database';
+  private readonly logger = new Logger(DatabasesService.name);
+
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+
+  async create(createDatabaseDto: CreateDatabaseDto, id: string) {
+    // disallow the global variable of all DBs
+    if (id === 'db_all') throw new Error('Forbidden DB name');
+
+    this.logger.log(createDatabaseDto, id);
+    // prefix db names
+    const dbName = `db_${id}`;
+    await this.cacheManager.set(
+      dbName,
+      { data: createDatabaseDto },
+      { ttl: 0 },
+    );
+
+    const dbs = ((await this.cacheManager.get('db_all')) as string[]) || [];
+
+    // update global DB names (the cache manager is not able to handle regular expressions)
+    await this.cacheManager.set('db_all', [...dbs, dbName]);
+    const data = await this.cacheManager.get(dbName);
+
+    return { data };
   }
 
-  findAll() {
-    return `This action returns all databases`;
+  /**
+   * Request all saved databases.
+   *
+   * @returns all databases
+   */
+  async findAll() {
+    const data: string[] = await this.cacheManager.get('db_all');
+    // cut off the `db_` prefix
+    return { data: data.map((dbname) => dbname.substring(3)) };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} database`;
+  /**
+   * OrbitDB information for a certain database.
+   *
+   * @param id database id
+   * @returns database info
+   */
+  async findOne(id: string) {
+    const data = await this.cacheManager.get(`db_${id}`);
+    return { data };
   }
 
-  update(id: number, updateDatabaseDto: UpdateDatabaseDto) {
-    return `This action updates a #${id} database`;
+  /**
+   * Update a certain OrbitDB entry
+   *
+   * @param id database id
+   * @param updateDatabaseDto update parameters
+   * @returns the newly updated database entry
+   */
+  async update(id: string, updateDatabaseDto: UpdateDatabaseDto) {
+    const dbName = `db_${id}`;
+    const dbInfo = this.cacheManager.get(dbName);
+
+    // check, if db is present
+    if (!dbInfo) throw new Error('Database not known');
+
+    return await this.cacheManager.set(dbName, {
+      ...dbInfo,
+      ...updateDatabaseDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} database`;
+  /**
+   * Remove a certain Orbitdb from the gateway-registrar.
+   *
+   * @param id database id
+   * @returns success status
+   */
+  async remove(id: string) {
+    // remove from global db registrat
+    const all: string[] = await this.cacheManager.get('db_all');
+    ldremove(all, (dbn: string) => `db_${id}` === dbn);
+    this.cacheManager.set('db_all', all);
+
+    // remove from cache
+    return await this.cacheManager.del(`db_${id}`);
   }
 }

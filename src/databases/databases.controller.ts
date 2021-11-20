@@ -15,9 +15,12 @@ import { UpdateDatabaseDto } from './dto/update-database.dto';
 export class DatabasesController {
   constructor(private readonly databasesService: DatabasesService) {}
 
-  @Post()
-  create(@Body() createDatabaseDto: CreateDatabaseDto) {
-    return this.databasesService.create(createDatabaseDto);
+  @Post(':id')
+  create(
+    @Body() createDatabaseDto: CreateDatabaseDto,
+    @Param('id') id: string,
+  ) {
+    return this.databasesService.create(createDatabaseDto, id);
   }
 
   @Get()
@@ -27,7 +30,7 @@ export class DatabasesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.databasesService.findOne(+id);
+    return this.databasesService.findOne(id);
   }
 
   @Patch(':id')
@@ -35,11 +38,11 @@ export class DatabasesController {
     @Param('id') id: string,
     @Body() updateDatabaseDto: UpdateDatabaseDto,
   ) {
-    return this.databasesService.update(+id, updateDatabaseDto);
+    return this.databasesService.update(id, updateDatabaseDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.databasesService.remove(+id);
+    return this.databasesService.remove(id);
   }
 }
