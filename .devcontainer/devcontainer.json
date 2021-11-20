@@ -27,6 +27,7 @@
 		"docker-in-docker": "20.10",
 		"docker-from-docker": "20.10",
 		"git": "latest",
+		"git-lfs": "latest",
 		"github-cli": "latest",
 		"sshd": "latest"
 	}
