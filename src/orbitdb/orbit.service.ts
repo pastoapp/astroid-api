@@ -1,8 +1,8 @@
 import { INestApplication, Logger, OnModuleInit } from '@nestjs/common';
 import { create } from 'ipfs-http-client';
-import {ApiConfig} from '../orbitdb/interfaces/api-config.interface'
-import {DbManager} from '../orbitdb/lib/db-manager'
-import {OrbitDbApi} from '../orbitdb/lib/orbitdb-api'
+import { ApiConfig } from '../orbitdb/interfaces/api-config.interface';
+import { DbManager } from '../orbitdb/lib/db-manager';
+import { OrbitDbApi } from '../orbitdb/lib/orbitdb-api';
 
 export const defaultConfig: ApiConfig = {
   ipfsHost: 'localhost',
