@@ -20,6 +20,7 @@ export class OrbitDbService implements OnModuleInit {
   OrbitDb = require('orbit-db');
 
   static API: OrbitDB;
+  api: OrbitDB;
 
   async apiFactory({
     ipfsHost,
@@ -51,6 +52,7 @@ export class OrbitDbService implements OnModuleInit {
       OrbitDbService.API = (
         await this.apiFactory(defaultConfig)
       ).dbm.getOrbitDb();
+      this.api = OrbitDbService.API;
       this.logger.log('Intialised OrbitDB');
     }
   }

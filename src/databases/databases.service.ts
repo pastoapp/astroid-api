@@ -3,20 +3,23 @@ import { Cache } from 'cache-manager';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { remove as ldremove } from 'lodash';
-import { OrbitDbService } from 'src/orbitdb/orbitdb.service';
-import OrbitDB from 'orbit-db';
+import { OrbitDbService } from '../orbitdb/orbitdb.service';
 
 @Injectable()
 export class DatabasesService {
   private readonly logger = new Logger(DatabasesService.name);
-  private oAPI: OrbitDB;
 
   constructor(
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-    private _orbitdb: OrbitDbService,
-  ) {
-    // TODO on moduleinit
-    this.oAPI = OrbitDbService.API;
+    private orbitdb: OrbitDbService,
+  ) {}
+
+  /**
+   * Access method for the current OrbitDB Instance
+   * @returns OrbitDB Instance
+   */
+  private getAPI() {
+    return OrbitDbService.API;
   }
 
   /**
@@ -29,34 +32,28 @@ export class DatabasesService {
   async create(createDatabaseDto: CreateDatabaseDto, id: string) {
     // disallow the global variable of all DBs
     if (id === 'db_all') throw new Error('Forbidden DB name');
+    if (await this.cacheManager.get(id))
+      throw new Error('Database does already exist');
 
-    // TODO: deny existing names
-
-    this.logger.log(createDatabaseDto, id);
     // prefix db names
     const dbName = `db_${id}`;
-    await this.cacheManager.set(
-      dbName,
-      { data: createDatabaseDto },
-      { ttl: 0 },
-    );
 
     // create DB in OrbitDB
-    // this.logger.debug({ id, createDatabaseDto });
-    // this.logger.debug({ oAPI: this.oAPI });
-    // this.logger.debug({ OrbitDbService: OrbitDbService.API });
+    const { api } = this.orbitdb;
     const { type: dbType } = createDatabaseDto;
-    OrbitDbService.API.create('db_test', 'feed');
+    const store = await api.create(dbName, dbType);
     this.logger.log(`Created ${dbName}`);
 
+    // cache store
+    await this.cacheManager.set(dbName, { data: store.address }, { ttl: 0 });
     // cache db name
     const dbs = ((await this.cacheManager.get('db_all')) as string[]) || [];
 
     // update global DB names (the cache manager is not able to handle regular expressions)
     await this.cacheManager.set('db_all', [...dbs, dbName]);
-    const data = await this.cacheManager.get(dbName);
+    const { data } = await this.cacheManager.get(dbName);
 
-    return { data };
+    return { data, store: store.identity };
   }
 
   /**
@@ -74,13 +71,22 @@ export class DatabasesService {
    * OrbitDB information for a certain database.
    *
    * @param id database id
-   * @returns database info
+   * @returns database info (currently, address + identity)
    */
   async findOne(id: string) {
     this.logger.log(`opening DB ${id}`);
-    const cacheData = await this.cacheManager.get(`db_${id}`);
+    const cacheData: {
+      data: {
+        root: string;
+        path: string;
+      };
+    } = await this.cacheManager.get(`db_${id}`);
 
-    // return { data };
+    const address = `/orbitdb/${cacheData.data.root}/${cacheData.data.path}`;
+
+    const store = await this.orbitdb.api.open(address);
+
+    return { store: store.identity, address };
   }
 
   /**

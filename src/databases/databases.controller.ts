@@ -9,7 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { OrbitDbService } from 'src/orbitdb/orbitdb.service';
+import { OrbitDbService } from '../orbitdb/orbitdb.service';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';

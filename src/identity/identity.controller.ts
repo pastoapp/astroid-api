@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { OrbitDbService } from 'src/orbitdb/orbitdb.service';
+import { OrbitDbService } from '../orbitdb/orbitdb.service';
 
 @Controller('identity')
 export class IdentityController {
