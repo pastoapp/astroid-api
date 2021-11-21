@@ -1,4 +1,3 @@
-import { Logger } from '@nestjs/common';
 import OrbitDB from 'orbit-db';
 import { DbManager } from './db-manager';
 

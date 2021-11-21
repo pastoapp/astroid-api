@@ -114,15 +114,20 @@ export class DatabasesService {
 
   /**
    * Remove a certain Orbitdb from the gateway-registrar.
-   * TODO: think about implementing this with ODB
+   * Deletes the local database `id`. This does not delete any data from peers. Uses a similar implementation as `orbitdb/orbit-db-http-api`.
    * @param id database id
    * @returns success status
    */
   async remove(id: string) {
-    // remove from global db registrat
+    // stop current api connection
+    await this.orbitdb.api.stop();
+
+    // remove from global db registrar
     const all: string[] = await this.cacheManager.get('db_all');
     ldremove(all, (dbn: string) => `db_${id}` === dbn);
     this.cacheManager.set('db_all', all);
+
+    this.logger.log(`unloaded db_${id}`);
 
     // remove from cache
     return await this.cacheManager.del(`db_${id}`);
