@@ -7,7 +7,7 @@ export class OrbitDbApi {
   private readonly logger = new Logger(OrbitDbApi.name);
 
   dbs: any = {};
-  dbm: any;
+  dbm: DbManager;
   orbitdb: OrbitDB;
 
   // TODO: #2 implement server options
@@ -17,8 +17,10 @@ export class OrbitDbApi {
     this.orbitdb = dbm.getOrbitDb();
   }
 
-  identity() {
-    return this.dbm.identity;
+  async identity() {
+    // const odb = this.orbitdb as any; // incomplete OrbitDB types
+    // return odb.identity;
+    return this.orbitdb.identity;
   }
 
   findDb(dbName: string): Store | null {

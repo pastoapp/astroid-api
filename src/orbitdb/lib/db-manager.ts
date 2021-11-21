@@ -1,13 +1,9 @@
+import OrbitDB from 'orbit-db';
+
 export class DbManager {
-  constructor(private orbitdb: any) {}
+  constructor(private orbitdb: OrbitDB) {}
 
-  identity = this.orbitdb.identity;
-
-  getOrbitDb() {
+  getOrbitDb(): OrbitDB {
     return this.orbitdb;
-  }
-
-  test() {
-    return 'Hello from db-manager';
   }
 }
