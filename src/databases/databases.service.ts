@@ -3,12 +3,21 @@ import { Cache } from 'cache-manager';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { remove as ldremove } from 'lodash';
+import { OrbitDbService } from 'src/orbitdb/orbitdb.service';
+import OrbitDB from 'orbit-db';
 
 @Injectable()
 export class DatabasesService {
   private readonly logger = new Logger(DatabasesService.name);
+  private oAPI: OrbitDB;
 
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+    private _orbitdb: OrbitDbService,
+  ) {
+    // TODO on moduleinit
+    this.oAPI = OrbitDbService.API;
+  }
 
   /**
    * Create an OrbitDB entry.
@@ -21,6 +30,8 @@ export class DatabasesService {
     // disallow the global variable of all DBs
     if (id === 'db_all') throw new Error('Forbidden DB name');
 
+    // TODO: deny existing names
+
     this.logger.log(createDatabaseDto, id);
     // prefix db names
     const dbName = `db_${id}`;
@@ -30,6 +41,15 @@ export class DatabasesService {
       { ttl: 0 },
     );
 
+    // create DB in OrbitDB
+    // this.logger.debug({ id, createDatabaseDto });
+    // this.logger.debug({ oAPI: this.oAPI });
+    // this.logger.debug({ OrbitDbService: OrbitDbService.API });
+    const { type: dbType } = createDatabaseDto;
+    OrbitDbService.API.create('db_test', 'feed');
+    this.logger.log(`Created ${dbName}`);
+
+    // cache db name
     const dbs = ((await this.cacheManager.get('db_all')) as string[]) || [];
 
     // update global DB names (the cache manager is not able to handle regular expressions)
@@ -58,8 +78,9 @@ export class DatabasesService {
    */
   async findOne(id: string) {
     this.logger.log(`opening DB ${id}`);
-    const data = await this.cacheManager.get(`db_${id}`);
-    return { data };
+    const cacheData = await this.cacheManager.get(`db_${id}`);
+
+    // return { data };
   }
 
   /**

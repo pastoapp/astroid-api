@@ -7,6 +7,6 @@ export class IdentityController {
 
   @Get()
   async sendIdentity() {
-    return (await OrbitDbService.API).identity();
+    return (await OrbitDbService.API).identity;
   }
 }
