@@ -23,14 +23,6 @@ export class DatabasesController {
     private orbit: OrbitService, // Inject OrbitDB Service
   ) {}
 
-  // TMP TESTING
-  @Get('/test/dulli')
-  async identity() {
-    const api = await OrbitService.API;
-
-    return api.identity();
-  }
-
   @Post(':id')
   async create(
     @Body() createDatabaseDto: CreateDatabaseDto,
