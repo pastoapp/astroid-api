@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import { OrbitService } from '../orbit.service';
+import { OrbitDbService } from 'src/orbitdb/orbitdb.service';
 
 @Controller('identity')
 export class IdentityController {
-  constructor(private _orbit: OrbitService) {}
+  constructor(private _orbit: OrbitDbService) {}
 
   @Get()
   async sendIdentity() {
-    return (await OrbitService.API).identity();
+    return (await OrbitDbService.API).identity();
   }
 }

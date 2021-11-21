@@ -3,10 +3,11 @@ import { DatabasesService } from './databases.service';
 import { DatabasesController } from './databases.controller';
 import * as redisStore from 'cache-manager-redis-store';
 import type { ClientOpts as RedisClientOpts } from 'redis';
-import { OrbitService } from 'src/orbit.service';
+import { OrbitdbModule } from 'src/orbitdb/orbitdb.module';
 
 @Module({
   imports: [
+    OrbitdbModule,
     CacheModule.register<RedisClientOpts>({
       store: redisStore,
       host: 'localhost',
@@ -15,6 +16,6 @@ import { OrbitService } from 'src/orbit.service';
     }),
   ],
   controllers: [DatabasesController],
-  providers: [DatabasesService, OrbitService],
+  providers: [DatabasesService],
 })
 export class DatabasesModule {}

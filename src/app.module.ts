@@ -3,11 +3,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabasesModule } from './databases/databases.module';
 import { IdentityController } from './identity/identity.controller';
-import { OrbitService } from './orbit.service';
+import { OrbitdbModule } from './orbitdb/orbitdb.module';
 
 @Module({
-  imports: [DatabasesModule],
+  imports: [DatabasesModule, OrbitdbModule],
   controllers: [AppController, IdentityController],
-  providers: [AppService, OrbitService],
+  providers: [AppService],
 })
 export class AppModule {}
