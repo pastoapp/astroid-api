@@ -9,21 +9,19 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { OrbitService } from 'src/orbit.service';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
-import { AstroidOrbitDB } from './orbit-db/orbit-db';
-import { defaultConfig } from './orbit-db/config';
 
 // TODO: #4 provide appropiate http response status'
 
 @Controller('databases')
 export class DatabasesController {
   constructor(
-    private readonly databasesService: DatabasesService, // private ipfsApi: IpfsApiService,
-  ) {
-    new AstroidOrbitDB({ ...defaultConfig, orbitDbDirectory: '/data/orbitdb' });
-  }
+    private readonly databasesService: DatabasesService,
+    private orbit: OrbitService, // Inject OrbitDB Service
+  ) {}
 
   @Post(':id')
   async create(
