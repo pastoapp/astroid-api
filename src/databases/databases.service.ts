@@ -15,14 +15,6 @@ export class DatabasesService {
   ) {}
 
   /**
-   * Access method for the current OrbitDB Instance
-   * @returns OrbitDB Instance
-   */
-  private getAPI() {
-    return OrbitDbService.API;
-  }
-
-  /**
    * Create an OrbitDB entry.
    *
    * @param createDatabaseDto database creation params
@@ -63,8 +55,19 @@ export class DatabasesService {
    */
   async findAll() {
     const data: string[] = await this.cacheManager.get('db_all');
-    // cut off the `db_` prefix
-    return { data: data.map((dbname) => dbname.substring(3)) };
+    const results = await Promise.all(
+      data.map(async (dbname) => {
+        const { data } = await this.cacheManager.get(dbname);
+        // TODO: Fix, as soon as I resetted the IPFS store and Redis
+        // if (!data.root) return;
+        // const { root, path } = data;
+        // return `/orbitdb/${root}/${path}`;
+        return { id: dbname, data };
+      }),
+    );
+    return {
+      data: results,
+    };
   }
 
   /**
@@ -91,7 +94,7 @@ export class DatabasesService {
 
   /**
    * Update a certain OrbitDB entry
-   *
+   *  TODO: think about implementing this with ODB
    * @param id database id
    * @param updateDatabaseDto update parameters
    * @returns the newly updated database entry
@@ -111,7 +114,7 @@ export class DatabasesService {
 
   /**
    * Remove a certain Orbitdb from the gateway-registrar.
-   *
+   * TODO: think about implementing this with ODB
    * @param id database id
    * @returns success status
    */
