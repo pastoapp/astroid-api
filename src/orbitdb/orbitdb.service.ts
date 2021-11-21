@@ -1,8 +1,8 @@
 import { INestApplication, Logger, OnModuleInit } from '@nestjs/common';
 import { create } from 'ipfs-http-client';
-import { DbManager } from '../databases/ipfs-api/lib/db-manager';
-import { OrbitDbApi } from '../databases/ipfs-api/lib/orbitdb-api';
-import { ApiConfig } from '../databases/orbit-db/interfaces/api-config.interface';
+import { DbManager } from './lib/db-manager';
+import { OrbitDbApi } from './lib/orbitdb-api';
+import { ApiConfig } from './interfaces/api-config.interface';
 
 export const defaultConfig: ApiConfig = {
   ipfsHost: 'localhost',
@@ -17,7 +17,7 @@ export class OrbitDbService implements OnModuleInit {
 
   OrbitDb = require('orbit-db');
 
-  static API: any;
+  static API: Promise<OrbitDbApi>;
 
   async apiFactory({
     ipfsHost,
@@ -47,13 +47,11 @@ export class OrbitDbService implements OnModuleInit {
     // Make sure, that on initialization of this module, only one, static instance of the API is going to be created.
     if (!OrbitDbService.API) {
       OrbitDbService.API = this.apiFactory(defaultConfig);
-      console.log(await OrbitDbService.API);
+      this.logger.log('Intialised OrbitDB');
     }
   }
 
   async enableShutDownHooks(app: INestApplication) {
-    // this.$on('beforeExit', async () => {
     await app.close();
-    // });
   }
 }
