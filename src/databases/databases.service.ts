@@ -57,6 +57,7 @@ export class DatabasesService {
    * @returns database info
    */
   async findOne(id: string) {
+    this.logger.log(`opening DB ${id}`);
     const data = await this.cacheManager.get(`db_${id}`);
     return { data };
   }

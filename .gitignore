@@ -36,3 +36,4 @@ lerna-debug.log*
 
 # redis data dumps
 *.rdb
+.env.local

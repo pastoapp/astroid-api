@@ -1,6 +1,6 @@
 import { Logger, Injectable } from '@nestjs/common';
 import { create } from 'ipfs-http-client';
-import { ApiConfig } from './interfaces/api-config.interface';
+import { ApiConfig } from '../orbit-db/interfaces/api-config.interface';
 import { DbManager } from './lib/db-manager';
 import { OrbitDbApi } from './lib/orbitdb-api';
 
@@ -10,8 +10,13 @@ const OrbitDb = require('orbit-db');
 @Injectable()
 export class IpfsApiService {
   private readonly logger = new Logger(IpfsApiService.name);
+  static API: Promise<OrbitDbApi>;
 
-  async apiFactory({
+  constructor(config: ApiConfig) {
+    IpfsApiService.API = this.apiFactory(config);
+  }
+
+  private async apiFactory({
     ipfsHost,
     ipfsPort,
     orbitDbDirectory,

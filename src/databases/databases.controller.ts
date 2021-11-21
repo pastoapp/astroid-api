@@ -12,12 +12,18 @@ import { Response } from 'express';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
+import { AstroidOrbitDB } from './orbit-db/orbit-db';
+import { defaultConfig } from './orbit-db/config';
 
 // TODO: #4 provide appropiate http response status'
 
 @Controller('databases')
 export class DatabasesController {
-  constructor(private readonly databasesService: DatabasesService) {}
+  constructor(
+    private readonly databasesService: DatabasesService, // private ipfsApi: IpfsApiService,
+  ) {
+    new AstroidOrbitDB({ ...defaultConfig, orbitDbDirectory: '/data/orbitdb' });
+  }
 
   @Post(':id')
   async create(
