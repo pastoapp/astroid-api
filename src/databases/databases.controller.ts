@@ -9,6 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { OrbitService } from 'src/orbit.service';
 import { DatabasesService } from './databases.service';
 import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
@@ -17,7 +18,18 @@ import { UpdateDatabaseDto } from './dto/update-database.dto';
 
 @Controller('databases')
 export class DatabasesController {
-  constructor(private readonly databasesService: DatabasesService) {}
+  constructor(
+    private readonly databasesService: DatabasesService,
+    private orbit: OrbitService, // Inject OrbitDB Service
+  ) {}
+
+  // TMP TESTING
+  @Get('/test/dulli')
+  async identity() {
+    const api = await OrbitService.API;
+
+    return api.identity();
+  }
 
   @Post(':id')
   async create(
