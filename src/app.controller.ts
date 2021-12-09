@@ -1,11 +1,20 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import {
+  Controller,
+  Request,
+  Get,
+  Post,
+  Query,
+  Logger,
+  UseGuards,
+} from '@nestjs/common';
 import { AppService } from './app.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {
-    // new IpfsApiService(defaultConfig);
-  }
+  private readonly logger = new Logger(AppController.name);
+
+  constructor(private readonly appService: AppService) {}
 
   @Get('/')
   getHello(): string {
@@ -16,5 +25,12 @@ export class AppController {
   async getKeys(@Query() query): Promise<string> {
     const { key } = query;
     return await this.appService.getKey(key);
+  }
+
+  @UseGuards(AuthGuard('local'))
+  @Post('auth/login')
+  async login(@Request() req) {
+    this.logger.debug('login is called');
+    return req.user;
   }
 }

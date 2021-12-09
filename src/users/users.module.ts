@@ -8,5 +8,6 @@ import { DatabasesModule } from 'src/databases/databases.module';
   imports: [OrbitdbModule, DatabasesModule],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService],
 })
 export class UsersModule {}

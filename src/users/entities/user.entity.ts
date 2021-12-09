@@ -1,7 +1,8 @@
 export class User {
   id: string;
   publicKey: string;
+  nonce: string;
   files?: string[];
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }

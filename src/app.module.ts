@@ -7,6 +7,7 @@ import { OrbitdbModule } from './orbitdb/orbitdb.module';
 import { ConfigModule } from '@nestjs/config';
 import type { ClientOpts as RedisClientOpts } from 'redis';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
@@ -27,6 +28,7 @@ import * as redisStore from 'cache-manager-redis-store';
       ttl: 0,
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [
     // main controller, currently only a 'hello world' response

@@ -5,6 +5,7 @@ import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { remove as ldremove } from 'lodash';
 import { OrbitDbService } from '../orbitdb/orbitdb.service';
 import KeyValueStore from 'orbit-db-kvstore';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class DatabasesService {
@@ -166,36 +167,58 @@ export class DatabasesService {
     console.log(store.all);
   }
 
-  async getKeyValueStore(id: string): Promise<KeyValueStore<string>> {
+  async getKeyValueStore<T = string>(id: string): Promise<KeyValueStore<T>> {
     const { store } = await this.getStoreFromID(id);
     if ((store.type as DbTypes) !== 'keyvalue')
       throw new Error('Invalid Store Type. Must be "keyvalue"');
-    return store as KeyValueStore<string>;
+    return store as KeyValueStore<T>;
   }
 
-  async addItemToKeyValue(
+  async addItemToKeyValue<T = string>(
     id: string,
-    { key, value }: { key: string; value: any },
+    { key, value }: { key: string; value: T },
   ) {
-    const kvStore = await this.getKeyValueStore(id);
+    const kvStore = await this.getKeyValueStore<T>(id);
     await kvStore.load();
-    const hash = await kvStore.put(key, JSON.stringify(value));
+    const hash = await kvStore.put(key, value);
     await kvStore.close();
     return { hash };
   }
 
-  async getItemFromKeyValue(id: string, key: string) {
-    const kvStore = await this.getKeyValueStore(id);
+  async getItemFromKeyValue<T = string>(
+    id: string,
+    key: string,
+  ): Promise<{ result: T }> {
+    const kvStore = await this.getKeyValueStore<T>(id);
     await kvStore.load();
     const result = kvStore.get(key);
     await kvStore.close();
-    return { result: JSON.parse(result) };
+    return { result };
   }
 
-  async getAllItemsFromKeyValue(id: string) {
-    const kvStore = await this.getKeyValueStore(id);
+  async getAllItemsFromKeyValue<T = string>(id: string) {
+    const kvStore = await this.getKeyValueStore<T>(id);
     await kvStore.load();
     const result = kvStore.all;
+    await kvStore.close();
+    return result;
+  }
+
+  async deleteItemFromKeyValue<T = string>(id: string, key: string) {
+    const kvStore = await this.getKeyValueStore<T>(id);
+    await kvStore.load();
+    const result = await kvStore.del(key);
+    await kvStore.close();
+    return result;
+  }
+
+  async updateItemFromKeyValue<T = string>(
+    id: string,
+    { key, value }: { key: string; value: T },
+  ) {
+    const kvStore = await this.getKeyValueStore<T>(id);
+    await kvStore.load();
+    const result = await kvStore.put(key, value);
     await kvStore.close();
     return result;
   }

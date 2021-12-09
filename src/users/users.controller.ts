@@ -6,12 +6,10 @@ import {
   Patch,
   Param,
   Delete,
-  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
@@ -28,13 +26,9 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Res() response: Response) {
-    try {
-      const { result } = await this.usersService.findOne(id);
-      response.json(result);
-    } catch (e) {
-      response.status(500).send({ error: e.message });
-    }
+  async findOne(@Param('id') id: string) {
+    const { result } = await this.usersService.findOne(id);
+    return result;
   }
 
   @Patch(':id')
