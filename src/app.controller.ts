@@ -9,6 +9,8 @@ import {
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from './users/entities/user.entity';
+import { LocalAuthGuard } from './auth/local-auth.guard';
 
 @Controller()
 export class AppController {
@@ -27,10 +29,16 @@ export class AppController {
     return await this.appService.getKey(key);
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
     this.logger.debug('login is called');
-    return req.user;
+    const user: User = req.user;
+
+    return {
+      id: user.id,
+      files: user.files,
+      publicKey: user.publicKey, // TODO: redundant?
+    };
   }
 }

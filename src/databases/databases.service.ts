@@ -5,7 +5,6 @@ import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { remove as ldremove } from 'lodash';
 import { OrbitDbService } from '../orbitdb/orbitdb.service';
 import KeyValueStore from 'orbit-db-kvstore';
-import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class DatabasesService {
@@ -59,11 +58,7 @@ export class DatabasesService {
     // create DB in OrbitDB
     const { api } = this.orbitdb;
     const { type: dbType } = createDatabaseDto;
-    const store = await api.create(dbName, dbType, {
-      accessController: {
-        write: ['*'],
-      },
-    });
+    const store = await api.create(dbName, dbType);
     this.logger.log(`Created ${dbName}`);
 
     // cache store
