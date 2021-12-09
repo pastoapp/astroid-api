@@ -28,6 +28,7 @@
     "@nestjs/microservices": "^8.2.2",
     "@nestjs/passport": "^8.0.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@pastoapp/astroid-keys": "https://github.com/pastoapp/astroid-keys",
     "cache-manager": "^3.6.0",
     "cache-manager-redis-store": "^2.0.0",
     "class-transformer": "^0.5.1",

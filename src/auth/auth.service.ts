@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import crypto from 'crypto';
+import { verifyMessage } from '@pastoapp/astroid-keys';
 
 @Injectable()
 export class AuthService {
@@ -14,21 +14,14 @@ export class AuthService {
     );
     const { result: user } = await this.usersService.findOne(uid);
 
-    // if (!user) return null;
+    if (!user) return null;
 
-    // const verifier = crypto.createVerify('RSA-SHA256');
-
-    // verifier.update(user.nonce);
-
-    // const publicKeyBuffer = Buffer.from(user.publicKey, 'base64');
-
-    // const result = verifier.verify(publicKeyBuffer, signature, 'base64');
+    const result = await verifyMessage(user.nonce, signature, user.publicKey);
 
     // await this.usersService.update(uid, {
     //   files: user.files, // TODO: refactor, redundant operation
     // });
 
-    // return result ? user : null;
-    return true ? user : null;
+    return result ? user : null;
   }
 }
