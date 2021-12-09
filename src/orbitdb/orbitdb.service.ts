@@ -36,7 +36,7 @@ export class OrbitDbService implements OnModuleInit {
 
     const orbitdb = await this.OrbitDb.createInstance(ipfs, {
       ...orbitDbOptions,
-      directory: orbitDbDirectory, // TODO: #1 Change `/orbitdb` to default orbitdb directory
+      directory: orbitDbDirectory || '/orbitdb', // TODO: #1 Change `/orbitdb` to default orbitdb directory
     });
 
     this.logger.log(`PeerID: ${orbitdb.id}`);
