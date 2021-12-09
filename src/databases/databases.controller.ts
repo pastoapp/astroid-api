@@ -63,14 +63,13 @@ export class DatabasesController {
     throw new Error('not implemented');
   }
 
-  @Post(':id')
+  @Post('/')
   async create(
     @Body() createDatabaseDto: CreateDatabaseDto,
-    @Param('id') id: string,
     @Res() response: Response,
   ) {
     try {
-      const result = await this.databasesService.create(createDatabaseDto, id);
+      const result = await this.databasesService.create(createDatabaseDto);
       response.json(result);
     } catch (e) {
       response.status(500).json({ error: e.message });

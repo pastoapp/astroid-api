@@ -45,7 +45,8 @@ export class DatabasesService {
    * @param id database name
    * @returns data, with what the database was generated
    */
-  async create(createDatabaseDto: CreateDatabaseDto, id: string) {
+  async create(createDatabaseDto: CreateDatabaseDto) {
+    const { dbName: id } = createDatabaseDto;
     // disallow the global variable of all DBs
     if (id === 'db_all') throw new Error('Forbidden DB name');
     if (await this.cacheManager.get(id))
@@ -165,14 +166,18 @@ export class DatabasesService {
     console.log(store.all);
   }
 
+  async getKeyValueStore(id: string): Promise<KeyValueStore<string>> {
+    const { store } = await this.getStoreFromID(id);
+    if ((store.type as DbTypes) !== 'keyvalue')
+      throw new Error('Invalid Store Type. Must be "keyvalue"');
+    return store as KeyValueStore<string>;
+  }
+
   async addItemToKeyValue(
     id: string,
     { key, value }: { key: string; value: any },
   ) {
-    const { store } = await this.getStoreFromID(id);
-    if ((store.type as DbTypes) !== 'keyvalue')
-      throw new Error('Invalid Store Type. Must be "keyvalue"');
-    const kvStore = store as KeyValueStore<string>;
+    const kvStore = await this.getKeyValueStore(id);
     await kvStore.load();
     const hash = await kvStore.put(key, JSON.stringify(value));
     await kvStore.close();
@@ -180,13 +185,18 @@ export class DatabasesService {
   }
 
   async getItemFromKeyValue(id: string, key: string) {
-    const { store } = await this.getStoreFromID(id);
-    if ((store.type as DbTypes) !== 'keyvalue')
-      throw new Error('Invalid Store Type. Must be "keyvalue"');
-    const kvStore = store as KeyValueStore<string>;
+    const kvStore = await this.getKeyValueStore(id);
     await kvStore.load();
     const result = kvStore.get(key);
     await kvStore.close();
-    return { result };
+    return { result: JSON.parse(result) };
+  }
+
+  async getAllItemsFromKeyValue(id: string) {
+    const kvStore = await this.getKeyValueStore(id);
+    await kvStore.load();
+    const result = kvStore.all;
+    await kvStore.close();
+    return result;
   }
 }

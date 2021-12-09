@@ -7,5 +7,6 @@ import { Module } from '@nestjs/common';
   imports: [OrbitdbModule],
   controllers: [DatabasesController],
   providers: [DatabasesService],
+  exports: [DatabasesService],
 })
 export class DatabasesModule {}
