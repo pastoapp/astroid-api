@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^1.1.5",
     "@nestjs/core": "^8.0.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^8.2.2",
@@ -47,9 +48,9 @@
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.177",
     "@types/node": "^16.0.0",
+    "@types/orbit-db": "https://github.com/valerius21/orbit-db-types.git",
     "@types/redis": "^2.8.32",
     "@types/supertest": "^2.0.11",
-    "@types/orbit-db": "https://github.com/valerius21/orbit-db-types.git",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "eslint": "^8.0.1",

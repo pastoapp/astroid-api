@@ -1,7 +1,5 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-// import { defaultConfig } from './ipfs-api/config';
-// import { IpfsApiService } from './ipfs-api/ipfs-api.service';
 
 @Controller()
 export class AppController {
@@ -9,8 +7,14 @@ export class AppController {
     // new IpfsApiService(defaultConfig);
   }
 
-  @Get()
+  @Get('/')
   getHello(): string {
     return this.appService.getHello();
+  }
+
+  @Get('/get')
+  async getKeys(@Query() query): Promise<string> {
+    const { key } = query;
+    return await this.appService.getKey(key);
   }
 }

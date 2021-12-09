@@ -1,20 +1,10 @@
-import { CacheModule, Module } from '@nestjs/common';
 import { DatabasesService } from './databases.service';
 import { DatabasesController } from './databases.controller';
-import * as redisStore from 'cache-manager-redis-store';
-import type { ClientOpts as RedisClientOpts } from 'redis';
 import { OrbitdbModule } from 'src/orbitdb/orbitdb.module';
+import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [
-    OrbitdbModule,
-    CacheModule.register<RedisClientOpts>({
-      store: redisStore,
-      host: 'localhost',
-      port: 6379,
-      ttl: 0,
-    }),
-  ],
+  imports: [OrbitdbModule],
   controllers: [DatabasesController],
   providers: [DatabasesService],
 })

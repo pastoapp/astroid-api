@@ -1,9 +1,10 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { CreateDatabaseDto } from './dto/create-database.dto';
+import { CreateDatabaseDto, DbTypes } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { remove as ldremove } from 'lodash';
 import { OrbitDbService } from '../orbitdb/orbitdb.service';
+import KeyValueStore from 'orbit-db-kvstore';
 
 @Injectable()
 export class DatabasesService {
@@ -13,6 +14,29 @@ export class DatabasesService {
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
     private orbitdb: OrbitDbService,
   ) {}
+
+  /**
+   * Helper function, which returns an open store
+   * @param id database ID
+   * @param openOptions opening options for the Orbitdb.open function
+   * @returns Store-Object from the opened OrbitDB + address
+   */
+  async getStoreFromID(id: string, openOptions?: IOpenOptions) {
+    const cacheData: {
+      data: {
+        root: string;
+        path: string;
+      };
+    } = await this.cacheManager.get(`db_${id}`);
+
+    const address = `/orbitdb/${cacheData.data.root}/${cacheData.data.path}`;
+    const store = await this.orbitdb.api.open(address, openOptions);
+
+    return {
+      store,
+      address,
+    };
+  }
 
   /**
    * Create an OrbitDB entry.
@@ -33,11 +57,19 @@ export class DatabasesService {
     // create DB in OrbitDB
     const { api } = this.orbitdb;
     const { type: dbType } = createDatabaseDto;
-    const store = await api.create(dbName, dbType);
+    const store = await api.create(dbName, dbType, {
+      accessController: {
+        write: ['*'],
+      },
+    });
     this.logger.log(`Created ${dbName}`);
 
     // cache store
-    await this.cacheManager.set(dbName, { data: store.address }, { ttl: 0 });
+    await this.cacheManager.set(
+      dbName,
+      { data: store.address, type: store.type },
+      { ttl: 0 },
+    );
     // cache db name
     const dbs = ((await this.cacheManager.get('db_all')) as string[]) || [];
 
@@ -78,18 +110,13 @@ export class DatabasesService {
    */
   async findOne(id: string) {
     this.logger.log(`opening DB ${id}`);
-    const cacheData: {
-      data: {
-        root: string;
-        path: string;
-      };
-    } = await this.cacheManager.get(`db_${id}`);
-
-    const address = `/orbitdb/${cacheData.data.root}/${cacheData.data.path}`;
-
-    const store = await this.orbitdb.api.open(address);
-
-    return { store: store.identity, address };
+    const { address, store } = await this.getStoreFromID(id);
+    await store.load();
+    this.logger.log(`Loaded db ${id}`);
+    return {
+      address,
+      store: store.identity,
+    };
   }
 
   /**
@@ -131,5 +158,35 @@ export class DatabasesService {
 
     // remove from cache
     return await this.cacheManager.del(`db_${id}`);
+  }
+
+  async removeItem(id: string, item: number | string) {
+    const { store } = await this.getStoreFromID(id);
+    console.log(store.all);
+  }
+
+  async addItemToKeyValue(
+    id: string,
+    { key, value }: { key: string; value: any },
+  ) {
+    const { store } = await this.getStoreFromID(id);
+    if ((store.type as DbTypes) !== 'keyvalue')
+      throw new Error('Invalid Store Type. Must be "keyvalue"');
+    const kvStore = store as KeyValueStore<string>;
+    await kvStore.load();
+    const hash = await kvStore.put(key, JSON.stringify(value));
+    await kvStore.close();
+    return { hash };
+  }
+
+  async getItemFromKeyValue(id: string, key: string) {
+    const { store } = await this.getStoreFromID(id);
+    if ((store.type as DbTypes) !== 'keyvalue')
+      throw new Error('Invalid Store Type. Must be "keyvalue"');
+    const kvStore = store as KeyValueStore<string>;
+    await kvStore.load();
+    const result = kvStore.get(key);
+    await kvStore.close();
+    return { result };
   }
 }
