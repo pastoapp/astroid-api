@@ -9,6 +9,8 @@ import type { ClientOpts as RedisClientOpts } from 'redis';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import * as redisStore from 'cache-manager-redis-store';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -36,6 +38,12 @@ import * as redisStore from 'cache-manager-redis-store';
     // Idenetity request
     IdentityController,
   ],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
