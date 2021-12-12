@@ -20,7 +20,14 @@ import { APP_GUARD } from '@nestjs/core';
     OrbitdbModule,
     ConfigModule.forRoot({
       // load .env file
-      envFilePath: ['.env'],
+      envFilePath: [
+        '.env',
+        '.env.production',
+        '.env.development',
+        '.env.test',
+        '.env.local',
+      ],
+      isGlobal: true,
     }),
     CacheModule.register<RedisClientOpts>({
       store: redisStore,

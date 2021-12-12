@@ -6,7 +6,7 @@ import { UsersModule } from 'src/users/users.module';
 import { LocalStrategy } from './local.strategy';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { JwtConfigService } from './jwt-config.service';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
@@ -15,15 +15,11 @@ import { JwtStrategy } from './jwt.strategy';
     OrbitdbModule,
     UsersModule,
     PassportModule,
-    // TODO: Critcal for production -> Change
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: {
-        expiresIn: '1h',
-      },
+    JwtModule.registerAsync({
+      useClass: JwtConfigService,
     }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtConfigService, JwtStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
