@@ -19,9 +19,10 @@ export class UsersService {
       id: uuid(),
       nonce: randomBytes(16).toString('base64'),
       publicKey: createUserDto.publicKey,
-      files: [],
+      messages: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      isAdmin: false,
     };
 
     return {

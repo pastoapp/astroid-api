@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import * as redisStore from 'cache-manager-redis-store';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { MessagesModule } from './messages/messages.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     UsersModule,
     AuthModule,
+    MessagesModule,
+    CaslModule,
   ],
   controllers: [
     // main controller, currently only a 'hello world' response
