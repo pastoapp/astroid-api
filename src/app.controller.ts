@@ -4,15 +4,18 @@ import {
   Query,
   Logger,
   Post,
-  Request,
   UseGuards,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { LocalAuthGuard } from './auth/local-auth.guard';
 import { Public } from './auth/meta';
 import { User } from './users/entities/user.entity';
+
+type JwtUserRequest = Request & { user: { uid: string } };
 
 @Controller()
 export class AppController {
@@ -37,7 +40,7 @@ export class AppController {
   @UseGuards(LocalAuthGuard)
   @Public()
   @Post('/auth/login')
-  async login(@Request() req) {
+  async login(@Req() req) {
     this.logger.debug('login is called');
     const user: User = req.user;
 
@@ -46,7 +49,7 @@ export class AppController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/auth/profile')
-  getProfile(@Request() req) {
+  getProfile(@Req() req: JwtUserRequest) {
     return req.user;
   }
 }
