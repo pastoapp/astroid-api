@@ -30,7 +30,7 @@ export class DatabasesService {
     } = await this.cacheManager.get(`db_${id}`);
 
     const address = `/orbitdb/${cacheData.data.root}/${cacheData.data.path}`;
-    const store = await this.orbitdb.api.open(address, openOptions);
+    const store = await OrbitDbService.API.open(address, openOptions);
 
     return {
       store,
@@ -56,7 +56,7 @@ export class DatabasesService {
     const dbName = `db_${id}`;
 
     // create DB in OrbitDB
-    const { api } = this.orbitdb;
+    const api = OrbitDbService.API;
     const { type: dbType } = createDatabaseDto;
     const store = await api.create(dbName, dbType);
     this.logger.log(`Created ${dbName}`);
@@ -144,7 +144,7 @@ export class DatabasesService {
    */
   async remove(id: string) {
     // stop current api connection
-    await this.orbitdb.api.stop();
+    await OrbitDbService.API.stop();
 
     // remove from global db registrar
     const all: string[] = await this.cacheManager.get('db_all');

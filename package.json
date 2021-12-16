@@ -58,7 +58,7 @@
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.177",
-    "@types/node": "^16.0.0",
+    "@types/node": "^17.0.0",
     "@types/orbit-db": "https://github.com/valerius21/orbit-db-types.git",
     "@types/passport-jwt": "^3.0.6",
     "@types/passport-local": "^1.0.34",
