@@ -15,7 +15,7 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 import { Public } from './auth/meta';
 import { User } from './users/entities/user.entity';
 
-type JwtUserRequest = Request & { user: { uid: string } };
+export type JwtUserRequest = Request & { user: { uid: string } };
 
 @Controller()
 export class AppController {
@@ -27,8 +27,8 @@ export class AppController {
   ) {}
 
   @Get('/')
-  getHello(): string {
-    return this.appService.getHello();
+  index(): string {
+    return this.appService.landingPage();
   }
 
   @Get('/get')

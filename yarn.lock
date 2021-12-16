@@ -1456,8 +1456,8 @@
     node-fetch "^2.6.1"
 
 "@pastoapp/astroid-keys@https://github.com/pastoapp/astroid-keys":
-  version "0.1.15"
-  resolved "https://github.com/pastoapp/astroid-keys#47f0d7074ff3cf728f916d23514f86e37898c946"
+  version "0.1.17"
+  resolved "https://github.com/pastoapp/astroid-keys#13334478297f4f8dd77d4bd3fed7bdb24c33eeb0"
   dependencies:
     human-crypto-keys "^0.1.4"
 

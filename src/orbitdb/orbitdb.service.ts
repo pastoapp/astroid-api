@@ -48,6 +48,7 @@ export class OrbitDbService implements OnModuleInit {
 
   async onModuleInit() {
     // Make sure, that on initialization of this module, only one, static instance of the API is going to be created.
+    // aka. singleton
     if (!OrbitDbService.API) {
       OrbitDbService.API = (
         await this.apiFactory(defaultConfig)

@@ -16,7 +16,7 @@ export class AuthService {
     this.logger.debug(
       `Attempting to verify ${uid} with signature ${signature}`,
     );
-    const { result: user } = await this.usersService.findOne(uid);
+    const user = await this.usersService.findOne(uid);
 
     if (!user) return null;
 

@@ -1,20 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { JwtUserRequest } from 'src/app.controller';
 
 @Controller('messages')
 export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
   @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messagesService.create(createMessageDto);
+  create(
+    @Req() { user: { uid } }: JwtUserRequest,
+    @Body() createMessageDto: CreateMessageDto,
+  ) {
+    return this.messagesService.create(uid, createMessageDto);
   }
 
   @Get()
-  findAll() {
-    return this.messagesService.findAll();
+  findAll(@Req() { user: { uid } }: JwtUserRequest) {
+    return this.messagesService.findAll(uid);
   }
 
   @Get(':id')

@@ -5,7 +5,7 @@ export class User {
   publicKey: string;
   nonce: string;
   isAdmin: boolean;
-  messages?: Message[];
+  messages?: string[] | Message[];
   createdAt?: string;
   updatedAt?: string;
 }

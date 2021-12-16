@@ -188,7 +188,7 @@ export class DatabasesService {
     await kvStore.load();
     const result = kvStore.get(key);
     await kvStore.close();
-    return { result };
+    return { result: result ?? null };
   }
 
   async getAllItemsFromKeyValue<T = string>(id: string) {
@@ -196,7 +196,7 @@ export class DatabasesService {
     await kvStore.load();
     const result = kvStore.all;
     await kvStore.close();
-    return result;
+    return result ?? null;
   }
 
   async deleteItemFromKeyValue<T = string>(id: string, key: string) {
@@ -210,7 +210,7 @@ export class DatabasesService {
   async updateItemFromKeyValue<T = string>(
     id: string,
     { key, value }: { key: string; value: T },
-  ) {
+  ): Promise<string> {
     const kvStore = await this.getKeyValueStore<T>(id);
     await kvStore.load();
     const result = await kvStore.put(key, value);

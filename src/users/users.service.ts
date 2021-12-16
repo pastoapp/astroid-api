@@ -34,16 +34,25 @@ export class UsersService {
     };
   }
 
-  async findAll() {
-    return await this.databaseService.getAllItemsFromKeyValue('users');
+  async findAll(): Promise<User[]> {
+    const result = await this.databaseService.getAllItemsFromKeyValue<User>(
+      'users',
+    );
+    const users = Object.values(result);
+    return users;
   }
 
-  async findOne(id: string) {
-    return await this.databaseService.getItemFromKeyValue<User>(`users`, id);
+  async findOne(id: string): Promise<User> {
+    const { result } = await this.databaseService.getItemFromKeyValue<User>(
+      `users`,
+      id,
+    );
+    return result;
   }
 
   // TODO: think about implementing it
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  // TODO: untested!
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<string> {
     const { result } = await this.databaseService.getItemFromKeyValue<User>(
       'users',
       id,
