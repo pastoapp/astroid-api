@@ -1,9 +1,9 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common';
 import { Cache } from 'cache-manager';
-import { CreateDatabaseDto, DbTypes } from './dto/create-database.dto';
+import { CreateDatabaseDto } from './dto/create-database.dto';
 import { UpdateDatabaseDto } from './dto/update-database.dto';
 import { remove as ldremove } from 'lodash';
-import { OrbitDbService } from '../orbitdb/orbitdb.service';
+import { DbType, OrbitDbService } from '../orbitdb/orbitdb.service';
 import KeyValueStore from 'orbit-db-kvstore';
 
 @Injectable()
@@ -164,7 +164,7 @@ export class DatabasesService {
 
   async getKeyValueStore<T = string>(id: string): Promise<KeyValueStore<T>> {
     const { store } = await this.getStoreFromID(id);
-    if ((store.type as DbTypes) !== 'keyvalue')
+    if ((store.type as DbType) !== 'keyvalue')
       throw new Error('Invalid Store Type. Must be "keyvalue"');
     return store as KeyValueStore<T>;
   }

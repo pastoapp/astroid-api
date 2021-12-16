@@ -1,4 +1,5 @@
 import { IsBoolean, IsNotEmpty, IsString, ValidateIf } from 'class-validator';
+import { DbType } from 'src/orbitdb/orbitdb.service';
 
 export class CreateDatabaseDto {
   @IsNotEmpty()
@@ -10,12 +11,10 @@ export class CreateDatabaseDto {
 
   @IsNotEmpty()
   @ValidateIf((o: CreateDatabaseDto) => o.type === 'keyvalue')
-  type: DbTypes;
+  type: DbType;
 
   override?: boolean;
   // TODO: #3 Add access controllers
   // https://github.com/orbitdb/orbit-db-http-api#post-dbdbname
   // add indexBy key
 }
-
-export type DbTypes = 'eventlog' | 'feed' | 'docstore' | 'keyvalue' | 'counter';

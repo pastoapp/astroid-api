@@ -16,9 +16,9 @@ export class OrbitDbService implements OnModuleInit {
   private readonly logger = new Logger(OrbitDbService.name);
   private config: ApiConfig;
 
-  OrbitDb = require('orbit-db');
+  private OrbitDb = require('orbit-db');
 
-  static API: OrbitDB;
+  public static API: OrbitDB;
 
   private ipfs: IPFSHTTPClient;
 
@@ -38,7 +38,7 @@ export class OrbitDbService implements OnModuleInit {
     });
   }
 
-  async initOrbitDb({
+  private async initOrbitDb({
     orbitDbOptions,
     orbitDbDirectory,
   }: ApiConfig): Promise<OrbitDB> {
@@ -52,16 +52,72 @@ export class OrbitDbService implements OnModuleInit {
     return orbitdb as OrbitDB;
   }
 
+  async createStore({ name, storeType, storeOptions }: InitialStore) {
+    const defaultStoreOptions = {
+      accessController: {
+        write: [
+          // Give access to ourselves
+          OrbitDbService.API.identity.id,
+          // TODO: Give access to the another peer
+        ],
+      },
+      overwrite: true,
+      replicate: true,
+    };
+
+    const store = await OrbitDbService.API.create(name, storeType, {
+      ...storeOptions,
+      ...defaultStoreOptions,
+    });
+
+    // TODO: Add to cache
+    // name, store.address
+
+    return {
+      name,
+      store,
+    };
+  }
+
+  async populateOrbitDb(initalStores: InitialStore[]) {
+    return Promise.all(initalStores.map((store) => this.createStore(store)));
+  }
+
   async onModuleInit() {
     // Make sure, that on initialization of this module, only one, static instance of the API is going to be created.
     // aka. singleton
     if (!OrbitDbService.API) {
       OrbitDbService.API = await this.initOrbitDb(this.config);
       this.logger.log('Intialised OrbitDB');
+      this.logger.log('Populating Astroid API...');
+
+      const initialStores: InitialStore[] = [
+        {
+          name: 'users',
+          storeType: 'keyvalue',
+        },
+        {
+          name: 'messages',
+          storeType: 'docstore',
+        },
+      ];
+
+      const stores = await this.populateOrbitDb(initialStores);
+      stores.forEach(({ name, store }) =>
+        this.logger.log('Initialised:', name, store.type, store.address),
+      );
     }
   }
 
   async enableShutDownHooks(app: INestApplication) {
     await app.close();
   }
+}
+
+export type DbType = 'eventlog' | 'feed' | 'docstore' | 'keyvalue' | 'counter';
+
+export interface InitialStore {
+  name: string;
+  storeType: DbType;
+  storeOptions?: any;
 }
