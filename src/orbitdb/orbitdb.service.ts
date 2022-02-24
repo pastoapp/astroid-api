@@ -1,8 +1,17 @@
-import { INestApplication, Logger, OnModuleInit } from '@nestjs/common';
+import {
+  CACHE_MANAGER,
+  INestApplication,
+  Inject,
+  Logger,
+  OnModuleInit,
+} from '@nestjs/common';
 import { create, IPFSHTTPClient } from 'ipfs-http-client';
 import { ApiConfig } from './interfaces/api-config.interface';
 import OrbitDB from 'orbit-db';
 import { existsSync, mkdirSync } from 'fs';
+import { Cache } from 'cache-manager';
+import Store from 'orbit-db-store';
+import DocumentStore from 'orbit-db-docstore';
 
 export const defaultConfig: ApiConfig = {
   ipfsHost: 'localhost',
@@ -22,7 +31,9 @@ export class OrbitDbService implements OnModuleInit {
 
   private ipfs: IPFSHTTPClient;
 
-  constructor(config = defaultConfig) {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
+    // TODO: add config to constructor
+    const config = defaultConfig;
     // make sure that the orbitdb directory exists
     this.config = { ...defaultConfig, ...config };
     if (!existsSync(config.orbitDbDirectory)) {
@@ -57,7 +68,8 @@ export class OrbitDbService implements OnModuleInit {
       accessController: {
         write: [
           // Give access to ourselves
-          OrbitDbService.API.identity.id,
+          // OrbitDbService.API.identity.id,
+          '*',
           // TODO: Give access to the another peer
         ],
       },
@@ -65,18 +77,30 @@ export class OrbitDbService implements OnModuleInit {
       replicate: true,
     };
 
-    const store = await OrbitDbService.API.create(name, storeType, {
+    const store = await OrbitDbService.API.docs(name, {
       ...storeOptions,
       ...defaultStoreOptions,
     });
 
-    // TODO: Add to cache
-    // name, store.address
+    this.cacheManager.set(name, `${store.address}`);
 
     return {
       name,
       store,
     };
+  }
+
+  async getStore<T = Store>(name: string): Promise<DocumentStore<T> | Store> {
+    const address: string = await this.cacheManager.get<string>(name);
+    if (name === 'users' || name === 'messages') {
+      const store = await OrbitDbService.API.docs<T>(address);
+      await store.load();
+      return store;
+    }
+    if (address) {
+      return OrbitDbService.API.open(address);
+    }
+    throw new Error(`No database with ${name} found`);
   }
 
   async populateOrbitDb(initalStores: InitialStore[]) {
@@ -94,7 +118,7 @@ export class OrbitDbService implements OnModuleInit {
       const initialStores: InitialStore[] = [
         {
           name: 'users',
-          storeType: 'keyvalue',
+          storeType: 'docstore',
         },
         {
           name: 'messages',

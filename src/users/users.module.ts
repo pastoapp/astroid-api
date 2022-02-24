@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { OrbitdbModule } from 'src/orbitdb/orbitdb.module';
-import { DatabasesModule } from 'src/databases/databases.module';
+import { OrbitdbModule } from '../orbitdb/orbitdb.module';
 
 @Module({
-  imports: [OrbitdbModule, DatabasesModule],
+  imports: [OrbitdbModule],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
