@@ -1,5 +1,5 @@
-import { Global, Module } from "@nestjs/common";
-import { OrbitDbService } from "./orbitdb.service";
+import { Global, Module } from '@nestjs/common';
+import { OrbitDbService } from './orbitdb.service';
 
 /**
  * OrbitDbModule is a NestJS module that provides OrbitDB functionality.
@@ -11,4 +11,4 @@ import { OrbitDbService } from "./orbitdb.service";
 })
 
 // eslint-disable-next-line prettier/prettier
-export class OrbitdbModule { }
+export class OrbitdbModule {}

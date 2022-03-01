@@ -4,14 +4,14 @@ import {
   Inject,
   Logger,
   OnModuleInit,
-} from "@nestjs/common";
-import { create, IPFSHTTPClient } from "ipfs-http-client";
-import { ApiConfig } from "./interfaces/api-config.interface";
-import OrbitDB from "orbit-db";
-import { existsSync, mkdirSync } from "fs";
-import { Cache } from "cache-manager";
-import Store from "orbit-db-store";
-import DocumentStore from "orbit-db-docstore";
+} from '@nestjs/common';
+import { create, IPFSHTTPClient } from 'ipfs-http-client';
+import { ApiConfig } from './interfaces/api-config.interface';
+import OrbitDB from 'orbit-db';
+import { existsSync, mkdirSync } from 'fs';
+import { Cache } from 'cache-manager';
+import Store from 'orbit-db-store';
+import DocumentStore from 'orbit-db-docstore';
 
 /**
  * Intial store interface
@@ -25,15 +25,15 @@ export interface InitialStore {
 /**
  * Available Database types.
  */
-export type DbType = "eventlog" | "feed" | "docstore" | "keyvalue" | "counter";
+export type DbType = 'eventlog' | 'feed' | 'docstore' | 'keyvalue' | 'counter';
 
 /**
  * Default config to start the application, {@link OrbitDbService}.
  */
 export const defaultConfig: ApiConfig = {
-  ipfsHost: "localhost",
+  ipfsHost: 'localhost',
   ipfsPort: 5001,
-  orbitDbDirectory: "/orbitdb",
+  orbitDbDirectory: '/orbitdb',
   orbitDbOptions: {},
   serverOptions: {},
 };
@@ -50,7 +50,7 @@ export class OrbitDbService implements OnModuleInit {
   private config: ApiConfig;
 
   // OrbitDb Library Object
-  private OrbitDb = require("orbit-db");
+  private OrbitDb = require('orbit-db');
 
   // main API object
   public static API: OrbitDB;
@@ -92,7 +92,7 @@ export class OrbitDbService implements OnModuleInit {
   }: ApiConfig): Promise<OrbitDB> {
     const orbitdb = await this.OrbitDb.createInstance(this.ipfs, {
       ...orbitDbOptions,
-      directory: orbitDbDirectory || "/orbitdb",
+      directory: orbitDbDirectory || '/orbitdb',
     });
 
     this.logger.log(`PeerID: ${orbitdb.id}`);
@@ -115,7 +115,7 @@ export class OrbitDbService implements OnModuleInit {
         write: [
           // Give access to ourselves
           // OrbitDbService.API.identity.id,
-          "*",
+          '*',
           // TODO: Give access to the another peer
         ],
       },
@@ -144,7 +144,7 @@ export class OrbitDbService implements OnModuleInit {
   async getStore<T = Store>(name: string): Promise<DocumentStore<T> | Store> {
     const address: string = await this.cacheManager.get<string>(name);
 
-    if (name === "users" || name === "messages") {
+    if (name === 'users' || name === 'messages') {
       const store = await OrbitDbService.API.docs<T>(address);
       await store.load();
       return store;
@@ -170,24 +170,24 @@ export class OrbitDbService implements OnModuleInit {
     // aka. singleton
     if (!OrbitDbService.API) {
       OrbitDbService.API = await this.initOrbitDb(this.config);
-      this.logger.log("Intialised OrbitDB");
-      this.logger.log("Populating Astroid API...");
+      this.logger.log('Intialised OrbitDB');
+      this.logger.log('Populating Astroid API...');
 
       // default stores
       const initialStores: InitialStore[] = [
         {
-          name: "users",
-          storeType: "docstore",
+          name: 'users',
+          storeType: 'docstore',
         },
         {
-          name: "messages",
-          storeType: "docstore",
+          name: 'messages',
+          storeType: 'docstore',
         },
       ];
 
       const stores = await this.populateOrbitDb(initialStores);
       stores.forEach(({ name, store }) =>
-        this.logger.log("Initialised:", name, store.type, store.address)
+        this.logger.log('Initialised:', name, store.type, store.address),
       );
     }
   }
