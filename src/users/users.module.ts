@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { UsersController } from './users.controller';
-import { OrbitdbModule } from '../orbitdb/orbitdb.module';
+import { Module } from "@nestjs/common";
+import { UsersService } from "./users.service";
+import { UsersController } from "./users.controller";
+import { OrbitdbModule } from "../orbitdb/orbitdb.module";
 
 @Module({
   imports: [OrbitdbModule],
@@ -9,4 +9,4 @@ import { OrbitdbModule } from '../orbitdb/orbitdb.module';
   providers: [UsersService],
   exports: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule { }

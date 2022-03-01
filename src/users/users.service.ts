@@ -4,29 +4,28 @@ import {
   Injectable,
   OnApplicationShutdown,
   OnApplicationBootstrap,
-} from '@nestjs/common';
-import { Cache } from 'cache-manager';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { v4 as uuid } from 'uuid';
-import { randomBytes } from 'crypto';
-import { User } from './entities/user.entity';
-import { OrbitDbService } from '../orbitdb/orbitdb.service';
-import DocumentStore from 'orbit-db-docstore';
+} from "@nestjs/common";
+import { Cache } from "cache-manager";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { v4 as uuid } from "uuid";
+import { randomBytes } from "crypto";
+import { User } from "./entities/user.entity";
+import { OrbitDbService } from "../orbitdb/orbitdb.service";
+import DocumentStore from "orbit-db-docstore";
 
 @Injectable()
 export class UsersService
-  implements OnApplicationBootstrap, OnApplicationShutdown
-{
+  implements OnApplicationBootstrap, OnApplicationShutdown {
   userStore: DocumentStore<User>;
   constructor(
     private readonly orbitdbService: OrbitDbService,
-    @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+    @Inject(CACHE_MANAGER) private cacheManager: Cache
+  ) { }
 
   async onApplicationBootstrap() {
     this.userStore = (await this.orbitdbService.getStore<User>(
-      'users',
+      "users"
     )) as DocumentStore<User>;
   }
 
@@ -37,7 +36,7 @@ export class UsersService
   async create(createUserDto: CreateUserDto) {
     const user: User = {
       _id: uuid(),
-      nonce: randomBytes(16).toString('base64'),
+      nonce: randomBytes(16).toString("base64"),
       publicKey: createUserDto.publicKey,
       messages: [],
       createdAt: new Date().toISOString(),
@@ -53,7 +52,7 @@ export class UsersService
 
   async findAll(): Promise<User[]> {
     const result = (await this.orbitdbService.getStore<User>(
-      'users',
+      "users"
     )) as DocumentStore<User>;
 
     const users = result.query((doc) => doc);
