@@ -11,14 +11,12 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { Public } from 'src/auth/meta';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
-    @UseGuards(LocalAuthGuard)
     @Public()
     @Post()
     create(@Body() createUserDto: CreateUserDto) {

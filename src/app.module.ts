@@ -44,7 +44,7 @@ import { CaslModule } from './casl/casl.module';
         CaslModule,
     ],
     controllers: [
-        // main controller, currently only a 'hello world' response
+        // main controller, currently only aIdentityController 'hello world' response
         AppController,
         // Idenetity request
         IdentityController,

@@ -34,10 +34,9 @@ export class AppController {
     @Get('/get')
     async getKeys(@Query() query): Promise<string> {
         const { key } = query;
-        return await this.appService.getKey(key);
+        return this.appService.getKey(key);
     }
 
-    @UseGuards(LocalAuthGuard)
     @Public()
     @Post('/auth/login')
     async login(@Req() req) {
