@@ -4,9 +4,9 @@ import { OrbitdbModule } from 'src/orbitdb/orbitdb.module';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [OrbitdbModule],
-  controllers: [DatabasesController],
-  providers: [DatabasesService],
-  exports: [DatabasesService],
+    imports: [OrbitdbModule],
+    controllers: [DatabasesController],
+    providers: [DatabasesService],
+    exports: [DatabasesService],
 })
 export class DatabasesModule {}

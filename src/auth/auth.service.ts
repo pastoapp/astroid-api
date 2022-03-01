@@ -6,33 +6,37 @@ import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
-  constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+    private readonly logger = new Logger(AuthService.name);
+    constructor(
+        private usersService: UsersService,
+        private jwtService: JwtService,
+    ) {}
 
-  async validateUser(uid: string, signature: string): Promise<User> {
-    this.logger.debug(
-      `Attempting to verify ${uid} with signature ${signature}`,
-    );
-    const user = await this.usersService.findOne(uid);
+    async validateUser(uid: string, signature: string): Promise<User> {
+        this.logger.debug(
+            `Attempting to verify ${uid} with signature ${signature}`,
+        );
+        const user = await this.usersService.findOne(uid);
 
-    if (!user) return null;
+        if (!user) return null;
 
-    const result = await verifyMessage(user.nonce, signature, user.publicKey);
+        const result = await verifyMessage(
+            user.nonce,
+            signature,
+            user.publicKey,
+        );
 
-    // await this.usersService.update(uid, {
-    //   files: user.files, // TODO: refactor, redundant operation
-    // });
+        // await this.usersService.update(uid, {
+        //   files: user.files, // TODO: refactor, redundant operation
+        // });
 
-    return result ? user : null;
-  }
+        return result ? user : null;
+    }
 
-  async login(user: User) {
-    const payload = { username: user.id, sub: user.id };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
+    async login(user: User) {
+        const payload = { username: user.id, sub: user.id };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
+    }
 }

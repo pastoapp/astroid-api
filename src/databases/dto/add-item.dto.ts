@@ -1,3 +1,3 @@
 export class AddItemDto {
-  feedItem: string | number | any;
+    feedItem: string | number | any;
 }

@@ -9,60 +9,62 @@ import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class MessagesService {
-  private readonly logger = new Logger(MessagesService.name);
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly databaseService: DatabasesService,
-  ) {}
+    private readonly logger = new Logger(MessagesService.name);
+    constructor(
+        private readonly usersService: UsersService,
+        private readonly databaseService: DatabasesService,
+    ) {}
 
-  async create(uid: string, createMessageDto: CreateMessageDto) {
-    const user = await this.usersService.findOne(uid);
-    const { id, publicKey, messages } = user;
-    const { content } = createMessageDto;
+    async create(uid: string, createMessageDto: CreateMessageDto) {
+        const user = await this.usersService.findOne(uid);
+        const { id, publicKey, messages } = user;
+        const { content } = createMessageDto;
 
-    const encryptedContent = await encryptMessage(content, publicKey);
+        const encryptedContent = await encryptMessage(content, publicKey);
 
-    const { hash } = await this.databaseService.addItemToKeyValue<Message>(
-      'messages',
-      {
-        key: uuid(),
-        value: {
-          content: encryptedContent,
-          id: uuid(),
-          uid: id,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        },
-      },
-    );
+        const { hash } = await this.databaseService.addItemToKeyValue<Message>(
+            'messages',
+            {
+                key: uuid(),
+                value: {
+                    content: encryptedContent,
+                    id: uuid(),
+                    uid: id,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                },
+            },
+        );
 
-    const userUpdate = await this.usersService.update(id, {
-      // TODO: add docstore support
-      // messages: [...((messages ?? []) as string[]), hash],
-      messages: [...((messages ?? []) as string[]), hash],
-    });
+        const userUpdate = await this.usersService.update(id, {
+            // TODO: add docstore support
+            // messages: [...((messages ?? []) as string[]), hash],
+            messages: [...((messages ?? []) as string[]), hash],
+        });
 
-    return {
-      userUpdate,
-      hash,
-    };
-  }
+        return {
+            userUpdate,
+            hash,
+        };
+    }
 
-  async findAll(uid: string) {
-    const msgs = await this.databaseService.getAllItemsFromKeyValue('messages');
-    const { messages } = await this.usersService.findOne(uid);
-    return messages;
-  }
+    async findAll(uid: string) {
+        const msgs = await this.databaseService.getAllItemsFromKeyValue(
+            'messages',
+        );
+        const { messages } = await this.usersService.findOne(uid);
+        return messages;
+    }
 
-  findOne(id: number) {
-    return `This action returns a #${id} message`;
-  }
+    findOne(id: number) {
+        return `This action returns a #${id} message`;
+    }
 
-  update(id: number, updateMessageDto: UpdateMessageDto) {
-    return `This action updates a #${id} message`;
-  }
+    update(id: number, updateMessageDto: UpdateMessageDto) {
+        return `This action updates a #${id} message`;
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} message`;
-  }
+    remove(id: number) {
+        return `This action removes a #${id} message`;
+    }
 }

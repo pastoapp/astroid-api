@@ -6,59 +6,59 @@ import { ApiConfig } from './interfaces/api-config.interface';
 import OrbitDB from 'orbit-db';
 
 export const defaultConfig: ApiConfig = {
-  ipfsHost: 'localhost',
-  ipfsPort: 5001,
-  // TODO: #6 test, if directory exists
-  orbitDbDirectory: '/astroid-api/orbitdb',
-  orbitDbOptions: {},
-  serverOptions: {},
+    ipfsHost: 'localhost',
+    ipfsPort: 5001,
+    // TODO: #6 test, if directory exists
+    orbitDbDirectory: '/astroid-api/orbitdb',
+    orbitDbOptions: {},
+    serverOptions: {},
 };
 
 export class OrbitDbService implements OnModuleInit {
-  private readonly logger = new Logger(OrbitDbService.name);
+    private readonly logger = new Logger(OrbitDbService.name);
 
-  OrbitDb = require('orbit-db');
+    OrbitDb = require('orbit-db');
 
-  static API: OrbitDB;
-  api: OrbitDB;
+    static API: OrbitDB;
+    api: OrbitDB;
 
-  async apiFactory({
-    ipfsHost,
-    ipfsPort,
-    orbitDbDirectory,
-    orbitDbOptions,
-    serverOptions,
-  }: ApiConfig) {
-    const ipfs = create({
-      host: ipfsHost,
-      port: ipfsPort,
-    });
+    async apiFactory({
+        ipfsHost,
+        ipfsPort,
+        orbitDbDirectory,
+        orbitDbOptions,
+        serverOptions,
+    }: ApiConfig) {
+        const ipfs = create({
+            host: ipfsHost,
+            port: ipfsPort,
+        });
 
-    const orbitdb = await this.OrbitDb.createInstance(ipfs, {
-      ...orbitDbOptions,
-      directory: orbitDbDirectory || '/orbitdb', // TODO: #1 Change `/orbitdb` to default orbitdb directory
-    });
+        const orbitdb = await this.OrbitDb.createInstance(ipfs, {
+            ...orbitDbOptions,
+            directory: orbitDbDirectory || '/orbitdb', // TODO: #1 Change `/orbitdb` to default orbitdb directory
+        });
 
-    this.logger.log(`PeerID: ${orbitdb.id}`);
+        this.logger.log(`PeerID: ${orbitdb.id}`);
 
-    const dbm = new DbManager(orbitdb);
+        const dbm = new DbManager(orbitdb);
 
-    return new OrbitDbApi(dbm, serverOptions);
-  }
-
-  async onModuleInit() {
-    // Make sure, that on initialization of this module, only one, static instance of the API is going to be created.
-    // aka. singleton
-    if (!OrbitDbService.API) {
-      OrbitDbService.API = (
-        await this.apiFactory(defaultConfig)
-      ).dbm.getOrbitDb();
-      this.api = OrbitDbService.API;
-      this.logger.log('Intialised OrbitDB');
+        return new OrbitDbApi(dbm, serverOptions);
     }
-  }
 
-  async enableShutDownHooks(app: INestApplication) {
-    await app.close();
-  }
+    async onModuleInit() {
+        // Make sure, that on initialization of this module, only one, static instance of the API is going to be created.
+        // aka. singleton
+        if (!OrbitDbService.API) {
+            OrbitDbService.API = (
+                await this.apiFactory(defaultConfig)
+            ).dbm.getOrbitDb();
+            this.api = OrbitDbService.API;
+            this.logger.log('Intialised OrbitDB');
+        }
+    }
+
+    async enableShutDownHooks(app: INestApplication) {
+        await app.close();
+    }
 }

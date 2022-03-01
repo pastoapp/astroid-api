@@ -10,16 +10,16 @@ import { JwtConfigService } from './jwt-config.service';
 import { JwtStrategy } from './jwt.strategy';
 
 @Module({
-  imports: [
-    DatabasesModule,
-    OrbitdbModule,
-    UsersModule,
-    PassportModule,
-    JwtModule.registerAsync({
-      useClass: JwtConfigService,
-    }),
-  ],
-  providers: [AuthService, LocalStrategy, JwtConfigService, JwtStrategy],
-  exports: [AuthService],
+    imports: [
+        DatabasesModule,
+        OrbitdbModule,
+        UsersModule,
+        PassportModule,
+        JwtModule.registerAsync({
+            useClass: JwtConfigService,
+        }),
+    ],
+    providers: [AuthService, LocalStrategy, JwtConfigService, JwtStrategy],
+    exports: [AuthService],
 })
 export class AuthModule {}
