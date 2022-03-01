@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../app.module';
-import { OrbitDbService } from './orbitdb.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AppModule } from "../app.module";
+import { OrbitDbService } from "./orbitdb.service";
 
-describe('OrbitDbService', () => {
+describe("OrbitDbService", () => {
   let service: OrbitDbService;
 
   beforeEach(async () => {
@@ -15,14 +15,14 @@ describe('OrbitDbService', () => {
     await service.onModuleInit();
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('should have an initialised store instance', async () => {
+  it("should have an initialised store instance", async () => {
     const { store, name } = await service.createStore({
-      name: 'testing',
-      storeType: 'docstore',
+      name: "testing",
+      storeType: "docstore",
     });
     expect(name).toBeTruthy();
     expect(store.identity.id).toBeDefined();
