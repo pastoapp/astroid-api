@@ -5,9 +5,9 @@ import { OrbitdbModule } from 'src/orbitdb/orbitdb.module';
 import { DatabasesModule } from 'src/databases/databases.module';
 
 @Module({
-  imports: [OrbitdbModule, DatabasesModule],
-  controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
+    imports: [OrbitdbModule, DatabasesModule],
+    controllers: [UsersController],
+    providers: [UsersService],
+    exports: [UsersService],
 })
 export class UsersModule {}

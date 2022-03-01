@@ -9,7 +9,7 @@ export const defaultConfig: ApiConfig = {
   ipfsHost: 'localhost',
   ipfsPort: 5001,
   // TODO: #6 test, if directory exists
-  orbitDbDirectory: '/data/orbitdb',
+  orbitDbDirectory: '/astroid-api/orbitdb',
   orbitDbOptions: {},
   serverOptions: {},
 };
