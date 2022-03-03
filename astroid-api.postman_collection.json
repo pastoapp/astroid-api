@@ -1,0 +1,405 @@
+{
+	"info": {
+		"_postman_id": "05c54a8d-8e1d-45d6-8ebe-3b01929049ce",
+		"name": "astroid-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"publicKey\": \"-----BEGIN PUBLIC KEY-----\\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1vtJdYTUHiBzUL/XxJTV\\nSCybPO976tC0GDU0A+fjHfZZPV5r6UKEMDDeTq0Eta5gsV0eYJdcOlhJYLBAtSWk\\nKCRQ+rsqDlaJwgo+6KM7+bFI66c5EXa1nyNGCeHJtFSvAtsmYBPbjETbxX50a78Q\\nUQQ/3CpQ9fQtxIdoIyVXseZOsd1IRpjADouWOxYen/YWWhNXI2y5/17srv3wL99K\\nfhFKcclMPWzBk0mlXkD1ICQ5Vm50Nu77mjWY/eGTCcbJ6oMWeu3vatL9p6oM3m9V\\nXZPXc+MaBDEipJ3mXEQfe/zeXZxm9l5AaiANhTNOQAHMgCQ+j82NXDZNW0i0sM3f\\n1wIDAQAB\\n-----END PUBLIC KEY-----\\n\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "942b36d6-db06-4767-be03-cfb514a05a64"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "a08a29c9-d355-499e-bde0-71aa50693074"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "requestToken",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/users/requestToken/:id",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"requestToken",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "72543afd-6483-4158-8ee5-fb7b051a2e8d"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "databases",
+			"item": [
+				{
+					"name": "create Database",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dbName\": \"tester\",\r\n    \"create\": true,\r\n    \"type\": \"keyvalue\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/databases/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"databases",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/databases/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"databases",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findOne",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/databases/:dbname",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"databases",
+								":dbname"
+							],
+							"variable": [
+								{
+									"key": "dbname",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "key value put",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/databases/:dbname/put",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"databases",
+								":dbname",
+								"put"
+							],
+							"variable": [
+								{
+									"key": "dbname",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "key value get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/databases/:dbname/:key",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"databases",
+								":dbname",
+								":key"
+							],
+							"variable": [
+								{
+									"key": "dbname",
+									"value": null
+								},
+								{
+									"key": "key",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Login with publicKey",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"942b36d6-db06-4767-be03-cfb514a05a64\",\r\n    \"password\":\"nq4BHLE3BUtkHAnISOwKopuZcgeQQFNmlhJsqtRa1HAViGD1djh890plJnTk5NJktzIPxrKUzIV10D6oi8S0tCQsg0R6mSEE0HtDaFYt58Bvcs7lYkFCjAoD+fGDCNxxXBI9hVs1zUFGbCG4vsAtbC/2ByD7eGxM9frU8k8xzc/Kgh9wzKaKeg3CWNPtrETM5lPO7VpF0x7S7abnhgqWn0fV2TWouTkAQAjlkX257Qvm4TTFOCE9m39c0VW+GNjWtIzg5XrT37xh4kzbLPwkAoyCSP4DcbSTolkZbG6MhXPRP2Bj3Ps8OFQhEd2rLLkuYtXOpUuzriuHeXR1XV40EA==\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/auth/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "profile request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/auth/profile",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "messages",
+			"item": [
+				{
+					"name": "find all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/messages/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"messages",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/messages/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"messages",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ijk0MmIzNmQ2LWRiMDYtNDc2Ny1iZTAzLWNmYjUxNGEwNWE2NCIsInN1YiI6Ijk0MmIzNmQ2LWRiMDYtNDc2Ny1iZTAzLWNmYjUxNGEwNWE2NCIsImlhdCI6MTYzOTY0OTkzNSwiZXhwIjoxNjM5NjUzNTM1fQ.4HeNAaIsayfbLNsz-4bpiBsqKJFDfB1hyWw_pdpUhnA",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
