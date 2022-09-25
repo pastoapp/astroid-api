@@ -52,7 +52,7 @@
     "devDependencies": {
         "@nestjs/cli": "^8.0.0",
         "@nestjs/schematics": "^8.0.0",
-        "@nestjs/swagger": "^5.2.0",
+        "@nestjs/swagger": "5.2.1",
         "@nestjs/testing": "^8.0.0",
         "@types/cache-manager": "^3.4.2",
         "@types/cache-manager-redis-store": "^2.0.0",
